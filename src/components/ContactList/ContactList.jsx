@@ -1,7 +1,11 @@
-// import { nanoid } from 'nanoid'
 import css from './ContactList.module.css';
 
-export const ContactList = ({ contacts, onDeleteContact }) => {
+import { useDispatch } from 'react-redux';
+import { deleteContact } from 'redux/contactsSlice';
+
+export const ContactList = ({ contacts }) => {
+  const dispatch = useDispatch();
+
   return (
     <ol className={css.list}>
       {contacts.map(({ name, number, id }) => (
@@ -9,7 +13,7 @@ export const ContactList = ({ contacts, onDeleteContact }) => {
           {name} : {number}
           <button
             type="button"
-            onClick={() => onDeleteContact(id)}
+            onClick={() => dispatch(deleteContact(id))}
             className={css.btn}
           >
             delete

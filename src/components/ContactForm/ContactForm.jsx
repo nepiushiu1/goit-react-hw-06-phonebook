@@ -1,35 +1,37 @@
-import { useState } from 'react';
 import css from './ContactForm.module.css';
 
-const ContactForm = ({ hadleSubmit }) => {
+import { useState } from 'react';
+import { nanoid } from 'nanoid';
+import { useDispatch } from 'react-redux';
+import { addContact } from 'redux/contactsSlice';
+
+const ContactForm = ({ contacts }) => {
+  const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
-  const onInputChange = evt => {
-    const { name, value } = evt.currentTarget;
-
-    switch (name) {
-      case 'name':
-        setName(value);
-        break;
-      case 'number':
-        setNumber(value);
-        break;
-
-      default:
-        return;
+  const onSubmitForm = event => {
+    event.preventDefault();
+    if (contacts.filter(e => e.name === name).length === 0) {
+      dispatch(addContact(nanoid(), name, number));
+      setName('');
+      setNumber('');
+    } else {
+      alert(`${name} is already in contacts`);
     }
   };
 
-  const onSubmitForm = evt => {
-    evt.preventDefault();
-    hadleSubmit(name, number);
-    clearForm();
-  };
-
-  const clearForm = () => {
-    setName('');
-    setNumber('');
+  const onInputChange = e => {
+    const { name, value } = e.target;
+    if (name === 'name') {
+      setName(() => {
+        return value;
+      });
+    } else {
+      setNumber(() => {
+        return value;
+      });
+    }
   };
 
   return (

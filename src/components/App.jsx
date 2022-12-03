@@ -1,40 +1,43 @@
 import css from './App.module.css';
 
 import { ContactList } from './ContactList/ContactList';
-import { nanoid } from 'nanoid';
+
 import { Filter } from './Filter/Filter';
 import ContactForm from './ContactForm/ContactForm';
 
-import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const App = () => {
-  const [contacts, setContacts] = useState(() => {
-    return JSON.parse(localStorage.getItem('contact')) || [];
-  });
-  const [filter, setFilter] = useState('');
+  const filter = useSelector(state => state.filter);
+  const contacts = useSelector(state => state.contacts);
 
-  useEffect(() => {
-    localStorage.setItem('contact', JSON.stringify(contacts));
-  }, [contacts]);
+  // const [contacts, setContacts] = useState(() => {
+  //   return JSON.parse(localStorage.getItem('contact')) || [];
+  // });
+  // const [filter, setFilter] = useState('');
 
-  const hadleSubmit = (name, number) => {
-    const contact = {
-      id: nanoid(),
-      name,
-      number,
-    };
+  // useEffect(() => {
+  //   localStorage.setItem('contact', JSON.stringify(contacts));
+  // }, [contacts]);
 
-    const isExistContact = contacts.find(
-      newContact => newContact.name === contact.name
-    );
+  // const hadleSubmit = (name, number) => {
+  //   const contact = {
+  //     id: nanoid(),
+  //     name,
+  //     number,
+  //   };
 
-    if (isExistContact) {
-      alert(`${name} is already in contacts`);
-      return;
-    }
+  //   const isExistContact = contacts.find(
+  //     newContact => newContact.name === contact.name
+  //   );
 
-    setContacts(prevState => [contact, ...prevState]);
-  };
+  //   if (isExistContact) {
+  //     alert(`${name} is already in contacts`);
+  //     return;
+  //   }
+
+  //   setContacts(prevState => [contact, ...prevState]);
+  // };
 
   const getFilterContacts = () => {
     return contacts.filter(contact =>
@@ -42,18 +45,24 @@ const App = () => {
     );
   };
 
-  const deleteContact = id => {
-    setContacts(prevState => prevState.filter(contact => contact.id !== id));
-  };
+  // const deleteContact = id => {
+  //   setContacts(prevState => prevState.filter(contact => contact.id !== id));
+  // };
 
   return (
     <div className={css.conteiner}>
       <h1>Phonebook</h1>
-      <ContactForm hadleSubmit={hadleSubmit} />
+      <ContactForm contacts={contacts} />
+      {/* <ContactForm hadleSubmit={hadleSubmit} /> */}
       <h2>Contacts</h2>
-      <Filter value={filter} onChange={e => setFilter(e.target.value)} />
+      {/* <Filter value={filter} onChange={e => setFilter(e.target.value)} /> */}
+      <Filter
+        contacts={contacts.filter(contact =>
+          contact.name.toLowerCase().includes(filter)
+        )}
+      />
       <ContactList
-        onDeleteContact={deleteContact}
+        // onDeleteContact={deleteContact}
         contacts={getFilterContacts()}
       />
     </div>
