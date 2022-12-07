@@ -1,19 +1,32 @@
 import css from './ContactList.module.css';
 
-import { useDispatch } from 'react-redux';
-import { deleteContact } from 'redux/contactsSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteContact, getContacts, getFilter } from 'redux/contactsSlice';
+// import { getFilter } from 'redux/filterSlice';
 
-export const ContactList = ({ contacts }) => {
+const filterContacts = (contacts, filter) => {
+  const normalizedFilter = filter.toLowerCase();
+  return contacts.filter(({ name }) =>
+    name.toLowerCase().includes(normalizedFilter)
+  );
+};
+
+const ContactList = () => {
   const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+  const visibleContacts = filterContacts(contacts, filter);
+
+  const deleteNewContact = contactId => dispatch(deleteContact(contactId));
 
   return (
     <ol className={css.list}>
-      {contacts.map(({ name, number, id }) => (
+      {visibleContacts.map(({ name, number, id }) => (
         <li key={id} className={css.link}>
           {name} : {number}
           <button
             type="button"
-            onClick={() => dispatch(deleteContact(id))}
+            onClick={() => dispatch(deleteNewContact(id))}
             className={css.btn}
           >
             delete
@@ -23,3 +36,4 @@ export const ContactList = ({ contacts }) => {
     </ol>
   );
 };
+export default ContactList;
