@@ -2,7 +2,6 @@ import css from './ContactList.module.css';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteContact, getContacts, getFilter } from 'redux/contactsSlice';
-// import { getFilter } from 'redux/filterSlice';
 
 const filterContacts = (contacts, filter) => {
   const normalizedFilter = filter.toLowerCase();
